@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
@@ -80,9 +81,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPost(Integer pageNumber, Integer pageSize) {
+    public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 
-        PageRequest p = PageRequest.of(pageNumber, pageSize);
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        PageRequest p = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> pagePost = this.postRepo.findAll(p);
         List<Post> allPost = pagePost.getContent();
         List<PostDto> postDtos = allPost.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
@@ -98,8 +101,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> geyPostByUser(Integer userId) {
-        User user = this.userRepo.findById(userId).orElseThrow(()->new ResourceNotFoundException("User ","User Id", userId));
+    public List<PostDto> getPostByUser(Integer userId) {
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("User ","User Id", userId));
         List<Post> posts = this.postRepo.findByUser(user);
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return postDtos;
@@ -113,8 +117,10 @@ public class PostServiceImpl implements PostService {
         return postDtos;
     }
 
-    @Override
-    public List<PostDto> searchPost(String keyword) {
-        return null;
+     @Override
+    public List<PostDto> searchPosts(String keywords) {
+        List<Post> posts = this.postRepo.findByTitleContaining(keywords);
+        List<PostDto> postDtos = posts.stream().map((post)->this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 }

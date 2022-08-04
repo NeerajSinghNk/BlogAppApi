@@ -21,16 +21,16 @@ public interface PostService {
     PostDto getPostById(Integer postId);
 
 //    GetAllPosts
-    PostResponse getAllPost(Integer pageNumber, Integer pageSize);
+    PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
 //    Get post by user
-    List<PostDto> geyPostByUser(Integer userId);
+    List<PostDto> getPostByUser(Integer userId);
 
 //    Get post by category
     List<PostDto> getPostByCategory(Integer categoryId);
 
 //    Search post
-    List<PostDto> searchPost(String keyword);
+    List<PostDto> searchPosts(String keywords);
 
 
 }
