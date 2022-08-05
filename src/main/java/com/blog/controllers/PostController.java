@@ -110,7 +110,7 @@ public class PostController {
     }
 
 //    Method to serve file
-    @GetMapping(value = "post/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/post/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void downloadImage(@PathVariable String imageName, HttpServletResponse response) throws IOException{
         InputStream resource = this.fileService.getResource(path,imageName);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
